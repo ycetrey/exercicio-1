@@ -1,0 +1,60 @@
+<?php
+    $this->headTitle('Products List');
+?>
+<?php
+$flash = $this->flashMessenger();
+$flash->setMessageOpenFormat('<div%s>
+         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+             &times;
+         </button>
+         <ul><li>')
+    ->setMessageSeparatorString('</li><li>')
+    ->setMessageCloseString('</li></ul></div>');
+
+echo $flash->render('error',   array('alert', 'alert-dismissable', 'alert-danger'));
+echo $flash->render('info',    array('alert', 'alert-dismissable', 'alert-info'));
+echo $flash->render('default', array('alert', 'alert-dismissable', 'alert-warning'));
+echo $flash->render('success', array('alert', 'alert-dismissable', 'alert-success'));
+?>
+<div class="row">
+    <div class="col-md-12">
+        <a href="<?php echo $this->url('products', array('controller' => 'products', 'action' => 'add')); ?>" class="btn btn-primary pull-right"><i class="glyphicon glyphicon-plus"></i> Add Product</a>
+    </div>
+</div>
+<hr>
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th style="width: 100px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php foreach($this->products as $product): /* @var $product \Application\Entity\Product */ ?>
+                <tr>
+                    <td><?=$product->getId()?></td>
+                    <td><?=$product->getName()?></td>
+                    <td><?=$product->getCategory()?></td>
+                    <td><?=$this->currencyFormat($product->getPrice(), 'USD', null, 'en_US')?></td>
+                    <td>
+                        <a href="<?php echo $this->url('products', array('controller' => 'products', 'action' => 'edit', 'id' => $product->getId())); ?>" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-pencil"></i> </a>
+                        <a href="<?php echo $this->url('products', array('controller' => 'products', 'action' => 'delete', 'id' => $product->getId())); ?>" class="btn btn-xs btn-danger" onclick="return confirm('Are you sure?')"><i class="glyphicon glyphicon-trash"></i> </a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+        <?php
+            echo $this->paginationControl(
+            $paginator, 'Sliding', 'paginator.phtml', array(
+                'controller' => 'products'
+            )
+        );
+        ?>
+    </div>
+</div>
